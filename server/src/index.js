@@ -1,5 +1,6 @@
 // Modules
 const express = require('express');
+const cookieParser = require('cookie-parser');
 const morgan = require('morgan');
 
 // App & Port
@@ -11,6 +12,8 @@ require('./db/mongoose');
 
 // App Config
 app.use(express.json());
+app.use(express.urlencoded({ extended: false }));
+app.use(cookieParser());
 app.use(morgan('dev'));
 
 // Routers

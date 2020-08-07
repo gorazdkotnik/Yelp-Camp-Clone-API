@@ -14,7 +14,7 @@ router.post('/', async (req, res) => {
   const isValid = dataKeys.every((dataKey) => allowedKeys.includes(dataKey));
 
   if (!isValid) {
-    return res.status(400).send(sendJsonError('Invalid data!'));
+    return res.status(400).send(sendJsonError('Invalid data'));
   }
 
   try {
@@ -70,7 +70,7 @@ router.patch('/:comment_id', async (req, res) => {
   );
 
   if (!isValid) {
-    return res.status(400).send(sendJsonError('Invalid updates!'));
+    return res.status(400).send(sendJsonError('Invalid updates'));
   }
 
   try {
@@ -117,7 +117,7 @@ router.delete('/:comment_id', async (req, res) => {
     });
 
     if (!comment) {
-      return res.status(404).send({ error: 'comment not found' });
+      return res.status(404).send();
     }
 
     campground.comments = campground.comments.filter(

@@ -1,6 +1,7 @@
 const express = require('express');
 const sendJsonError = require('../helpers/sendJsonError');
 const User = require('../models/user');
+const auth = require('../middleware/auth');
 const router = new express.Router();
 
 /**
@@ -19,11 +20,12 @@ router.post('/', async (req, res) => {
   const isValid = dataKeys.every((dataKey) => allowedKeys.includes(dataKey));
 
   if (!isValid) {
-    return res.status(400).send(sendJsonError('Invalid data!'));
+    return res.status(400).send(sendJsonError('Invalid data'));
   }
 
   try {
     const user = await User.findOne({ username: req.body.username });
+
     if (user) {
       return res
         .status(400)
@@ -31,8 +33,38 @@ router.post('/', async (req, res) => {
     }
 
     const newUser = new User(req.body);
+    const token = await newUser.generateAuthToken();
+    res.cookie('auth_token', token);
+
     await newUser.save();
-    res.status(201).send(newUser);
+    res.status(201).send({ user: newUser, token });
+  } catch (e) {
+    res.status(400).send(sendJsonError(e.message, e.stack));
+  }
+});
+
+/**
+ * * POST
+ * * /users/login
+ */
+router.post('/login', async (req, res) => {
+  const dataKeys = Object.keys(req.body);
+  const allowedKeys = ['username', 'password'];
+  const isValid = dataKeys.every((dataKey) => allowedKeys.includes(dataKey));
+
+  if (!isValid) {
+    return res.status(400).send(sendJsonError('Invalid data'));
+  }
+
+  try {
+    const user = await User.findByCredentials(
+      req.body.username,
+      req.body.password
+    );
+    const token = await user.generateAuthToken();
+    res.cookie('auth_token', token);
+
+    res.send({ user, token });
   } catch (e) {
     res.status(400).send(sendJsonError(e.message, e.stack));
   }
@@ -42,13 +74,8 @@ router.post('/', async (req, res) => {
  * * GET
  * * /users
  */
-router.get('/', async (req, res) => {
-  try {
-    const users = await User.find({});
-    res.send(users);
-  } catch (e) {
-    res.status(500).send(sendJsonError(e.message, e.stack));
-  }
+router.get('/me', auth, async (req, res) => {
+  res.send(req.user);
 });
 
 /**
@@ -69,7 +96,7 @@ router.patch('/:id', async (req, res) => {
   );
 
   if (!isValid) {
-    return res.status(400).send(sendJsonError('Invalid updates!'));
+    return res.status(400).send(sendJsonError('Invalid updates'));
   }
 
   try {

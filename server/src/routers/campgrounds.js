@@ -14,7 +14,7 @@ router.post('/', async (req, res) => {
   const isValid = dataKeys.every((dataKey) => allowedKeys.includes(dataKey));
 
   if (!isValid) {
-    return res.status(400).send(sendJsonError('Invalid data!'));
+    return res.status(400).send(sendJsonError('Invalid data'));
   }
 
   const campground = new Campground(req.body);
@@ -70,7 +70,7 @@ router.patch('/:id', async (req, res) => {
   );
 
   if (!isValid) {
-    return res.status(400).send(sendJsonError('Invalid updates!'));
+    return res.status(400).send(sendJsonError('Invalid updates'));
   }
 
   try {
