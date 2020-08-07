@@ -1,5 +1,6 @@
 const express = require('express');
 const Campground = require('../models/campground');
+const Comment = require('../models/comment');
 const sendJsonError = require('../helpers/sendJsonError');
 const router = new express.Router();
 
@@ -10,7 +11,7 @@ const router = new express.Router();
 router.post('/', async (req, res) => {
   const dataKeys = Object.keys(req.body);
   const allowedKeys = ['title', 'image', 'description', 'price'];
-  const isValid = dataKeys.every(dataKey => allowedKeys.includes(dataKey));
+  const isValid = dataKeys.every((dataKey) => allowedKeys.includes(dataKey));
 
   if (!isValid) {
     return res.status(400).send(sendJsonError('Invalid data!'));
@@ -35,7 +36,7 @@ router.get('/', async (req, res) => {
     const campgrounds = await Campground.find({});
     res.send(campgrounds);
   } catch (e) {
-    res.status(500).send(sendJsonError(e.message, e.stack))
+    res.status(500).send(sendJsonError(e.message, e.stack));
   }
 });
 
@@ -53,7 +54,7 @@ router.get('/:id', async (req, res) => {
 
     res.send(campground);
   } catch (e) {
-    res.status(500).send(sendJsonError(e.message, e.stack))
+    res.status(500).send(sendJsonError(e.message, e.stack));
   }
 });
 
@@ -64,16 +65,23 @@ router.get('/:id', async (req, res) => {
 router.patch('/:id', async (req, res) => {
   const updateKeys = Object.keys(req.body);
   const allowedKeys = ['title', 'image', 'description', 'price'];
-  const isValid = updateKeys.every(updateKey => allowedKeys.includes(updateKey));
+  const isValid = updateKeys.every((updateKey) =>
+    allowedKeys.includes(updateKey)
+  );
 
   if (!isValid) {
     return res.status(400).send(sendJsonError('Invalid updates!'));
   }
 
   try {
-    const campground = await Campground.findByIdAndUpdate(req.params.id, req.body, {
-      new: true, runValidators: true
-    });
+    const campground = await Campground.findByIdAndUpdate(
+      req.params.id,
+      req.body,
+      {
+        new: true,
+        runValidators: true,
+      }
+    );
 
     if (!campground) {
       return res.status(404).send();
@@ -85,7 +93,7 @@ router.patch('/:id', async (req, res) => {
   }
 });
 
-/** 
+/**
  * * DELETE
  * * /campgrounds/:id
  */
@@ -97,6 +105,7 @@ router.delete('/:id', async (req, res) => {
       return res.status(404).send();
     }
 
+    await Comment.deleteMany({ campground: campground._id });
     res.send(campground);
   } catch (e) {
     res.status(500).send(sendJsonError(e.message, e.stack));

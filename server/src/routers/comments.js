@@ -11,10 +11,10 @@ const router = new express.Router({ mergeParams: true });
 router.post('/', async (req, res) => {
   const dataKeys = Object.keys(req.body);
   const allowedKeys = ['description'];
-  const isValid = dataKeys.every(dataKey => allowedKeys.includes(dataKey));
+  const isValid = dataKeys.every((dataKey) => allowedKeys.includes(dataKey));
 
   if (!isValid) {
-    return res.status(400).send(sendJsonError('Invalid data!'))
+    return res.status(400).send(sendJsonError('Invalid data!'));
   }
 
   try {
@@ -26,7 +26,7 @@ router.post('/', async (req, res) => {
 
     const comment = new Comment({
       ...req.body,
-      campground: campground._id
+      campground: campground._id,
     });
 
     await comment.save();
@@ -65,7 +65,9 @@ router.get('/', async (req, res) => {
 router.patch('/:comment_id', async (req, res) => {
   const updateKeys = Object.keys(req.body);
   const allowedKeys = ['description'];
-  const isValid = updateKeys.every(updateKey => allowedKeys.includes(updateKey));
+  const isValid = updateKeys.every((updateKey) =>
+    allowedKeys.includes(updateKey)
+  );
 
   if (!isValid) {
     return res.status(400).send(sendJsonError('Invalid updates!'));
@@ -78,10 +80,14 @@ router.patch('/:comment_id', async (req, res) => {
       return res.status(404).send();
     }
 
-    const comment = await Comment.findByIdAndUpdate(req.params.comment_id, req.body, {
-      new: true,
-      runValidators: true
-    });
+    const comment = await Comment.findOneAndUpdate(
+      { campground: req.params.id, _id: req.params.comment_id },
+      req.body,
+      {
+        new: true,
+        runValidators: true,
+      }
+    );
 
     if (!comment) {
       return res.status(404).send();
@@ -102,18 +108,23 @@ router.delete('/:comment_id', async (req, res) => {
     const campground = await Campground.findById(req.params.id);
 
     if (!campground || !campground.comments.includes(req.params.comment_id)) {
-      return res.status(404).send({ error: 'campground not found' });
+      return res.status(404).send();
     }
 
-    const comment = await Comment.findByIdAndDelete(req.params.comment_id);
+    const comment = await Comment.findOneAndDelete({
+      campground: req.params.id,
+      _id: req.params.comment_id,
+    });
 
     if (!comment) {
       return res.status(404).send({ error: 'comment not found' });
     }
 
-    campground.comments = campground.comments.filter(id => id.toString() !== req.params.comment_id);
-    await campground.save();
+    campground.comments = campground.comments.filter(
+      (id) => id.toString() !== req.params.comment_id
+    );
 
+    await campground.save();
     res.send(comment);
   } catch (e) {
     res.status(500).send(sendJsonError(e.message, e.stack));
