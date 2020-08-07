@@ -16,6 +16,7 @@ app.use(morgan('dev'));
 // Routers
 app.use('/campgrounds', require('./routers/campgrounds'));
 app.use('/campgrounds/:id/comments', require('./routers/comments'));
+app.use('/users', require('./routers/users'));
 
 // Listener
 app.listen(port, () => console.log(`Server listening on port ${port}....`));
