@@ -2,6 +2,8 @@ const mongoose = require('mongoose');
 const validator = require('validator');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
+const Campground = require('./campground');
+const Comment = require('./comment');
 
 const userSchema = new mongoose.Schema(
   {
@@ -70,8 +72,21 @@ const userSchema = new mongoose.Schema(
   },
   {
     timestamps: true,
+    toJSON: { virtuals: true },
   }
 );
+
+userSchema.virtual('campgrounds', {
+  ref: 'Campground',
+  localField: '_id',
+  foreignField: 'owner',
+});
+
+userSchema.virtual('comments', {
+  ref: 'Comment',
+  localField: '_id',
+  foreignField: 'owner',
+});
 
 userSchema.methods.toJSON = function () {
   const user = this;
@@ -116,6 +131,13 @@ userSchema.pre('save', async function (next) {
     user.password = await bcrypt.hash(user.password, 10);
   }
 
+  next();
+});
+
+userSchema.pre('deleteOne', { document: true }, async function (next) {
+  const user = this;
+  await Campground.deleteMany({ owner: user._id });
+  await Comment.deleteMany({ owner: user._id });
   next();
 });
 

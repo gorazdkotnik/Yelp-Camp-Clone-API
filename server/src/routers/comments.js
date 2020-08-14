@@ -2,13 +2,14 @@ const express = require('express');
 const Comment = require('../models/comment');
 const Campground = require('../models/campground');
 const sendJsonError = require('../helpers/sendJsonError');
+const auth = require('../middleware/auth');
 const router = new express.Router({ mergeParams: true });
 
 /**
  * * POST
  * * /campgrounds/:id/comments
  */
-router.post('/', async (req, res) => {
+router.post('/', auth, async (req, res) => {
   const dataKeys = Object.keys(req.body);
   const allowedKeys = ['description'];
   const isValid = dataKeys.every((dataKey) => allowedKeys.includes(dataKey));
@@ -18,7 +19,7 @@ router.post('/', async (req, res) => {
   }
 
   try {
-    const campground = await Campground.findById(req.params.id);
+    const campground = await Campground.findOne({ _id: req.params.id });
 
     if (!campground) {
       return res.status(404).send();
@@ -27,12 +28,10 @@ router.post('/', async (req, res) => {
     const comment = new Comment({
       ...req.body,
       campground: campground._id,
+      owner: req.user._id,
     });
 
     await comment.save();
-    campground.comments.push(comment);
-    await campground.save();
-
     res.status(201).send(comment);
   } catch (e) {
     res.status(400).send(sendJsonError(e.message, e.stack));
@@ -45,14 +44,14 @@ router.post('/', async (req, res) => {
  */
 router.get('/', async (req, res) => {
   try {
-    const campground = await Campground.findById(req.params.id);
+    const campground = await Campground.findOne({ _id: req.params.id });
 
     if (!campground) {
       return res.status(404).send();
     }
 
-    const comments = await Comment.find({ campground: req.params.id });
-    res.send(comments);
+    await campground.populate('comments').execPopulate();
+    res.send(campground.comments);
   } catch (e) {
     res.status(500).send(sendJsonError(e.message, e.stack));
   }
@@ -62,7 +61,7 @@ router.get('/', async (req, res) => {
  * * PATCH
  * * /campgrounds/:id/comments/:comment_id
  */
-router.patch('/:comment_id', async (req, res) => {
+router.patch('/:comment_id', auth, async (req, res) => {
   const updateKeys = Object.keys(req.body);
   const allowedKeys = ['description'];
   const isValid = updateKeys.every((updateKey) =>
@@ -74,25 +73,24 @@ router.patch('/:comment_id', async (req, res) => {
   }
 
   try {
-    const campground = await Campground.findById(req.params.id);
+    const campground = await Campground.findOne({ _id: req.params.id });
 
-    if (!campground || !campground.comments.includes(req.params.comment_id)) {
+    if (!campground) {
       return res.status(404).send();
     }
 
-    const comment = await Comment.findOneAndUpdate(
-      { campground: req.params.id, _id: req.params.comment_id },
-      req.body,
-      {
-        new: true,
-        runValidators: true,
-      }
-    );
+    const comment = await Comment.findOne({
+      campground: req.params.id,
+      _id: req.params.comment_id,
+      owner: req.user._id,
+    });
 
     if (!comment) {
       return res.status(404).send();
     }
 
+    updateKeys.every((update) => (comment[update] = req.body[update]));
+    await comment.save();
     res.send(comment);
   } catch (e) {
     res.status(400).send(sendJsonError(e.message, e.stack));
@@ -103,28 +101,25 @@ router.patch('/:comment_id', async (req, res) => {
  * * DELETE
  * * /campgrounds/:id/comments/:comment_id
  */
-router.delete('/:comment_id', async (req, res) => {
+router.delete('/:comment_id', auth, async (req, res) => {
   try {
-    const campground = await Campground.findById(req.params.id);
+    const campground = await Campground.findOne({ _id: req.params.id });
 
-    if (!campground || !campground.comments.includes(req.params.comment_id)) {
+    if (!campground) {
       return res.status(404).send();
     }
 
-    const comment = await Comment.findOneAndDelete({
+    const comment = await Comment.findOne({
       campground: req.params.id,
       _id: req.params.comment_id,
+      owner: req.user._id,
     });
 
     if (!comment) {
       return res.status(404).send();
     }
 
-    campground.comments = campground.comments.filter(
-      (id) => id.toString() !== req.params.comment_id
-    );
-
-    await campground.save();
+    await comment.deleteOne();
     res.send(comment);
   } catch (e) {
     res.status(500).send(sendJsonError(e.message, e.stack));

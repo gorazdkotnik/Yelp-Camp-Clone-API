@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const validator = require('validator');
+const Comment = require('./comment');
 
 const campgroundSchema = new mongoose.Schema(
   {
@@ -40,18 +41,29 @@ const campgroundSchema = new mongoose.Schema(
       min: 1,
       max: 1000,
     },
-    comments: [
-      {
-        type: mongoose.Schema.Types.ObjectId,
-        required: true,
-        ref: 'Comment',
-      },
-    ],
+    owner: {
+      type: mongoose.Schema.Types.ObjectId,
+      required: true,
+      ref: 'User',
+    },
   },
   {
     timestamps: true,
+    toJSON: { virtuals: true },
   }
 );
+
+campgroundSchema.virtual('comments', {
+  ref: 'Comment',
+  localField: '_id',
+  foreignField: 'campground',
+});
+
+campgroundSchema.pre('deleteOne', { document: true }, async function (next) {
+  const campground = this;
+  await Comment.deleteMany({ campground: campground._id });
+  next();
+});
 
 const Campground = mongoose.model('Campground', campgroundSchema);
 module.exports = Campground;

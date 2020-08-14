@@ -13,6 +13,11 @@ const commentSchema = new mongoose.Schema(
       required: true,
       ref: 'Campground',
     },
+    owner: {
+      type: mongoose.Schema.Types.ObjectId,
+      required: true,
+      ref: 'User',
+    },
   },
   {
     timestamps: true,
