@@ -1,7 +1,8 @@
 const express = require('express');
-const sendJsonError = require('../helpers/sendJsonError');
+const sendJsonError = require('../utils/sendJsonError');
 const User = require('../models/user');
 const auth = require('../middleware/auth');
+const { createUserSchema, loginUserSchema } = require('../utils/joi/users');
 const router = new express.Router();
 
 /**
@@ -9,21 +10,8 @@ const router = new express.Router();
  * * /users
  */
 router.post('/', async (req, res) => {
-  const dataKeys = Object.keys(req.body);
-  const allowedKeys = [
-    'firstName',
-    'lastName',
-    'username',
-    'email',
-    'password',
-  ];
-  const isValid = dataKeys.every((dataKey) => allowedKeys.includes(dataKey));
-
-  if (!isValid) {
-    return res.status(400).send(sendJsonError('Invalid data'));
-  }
-
   try {
+    await createUserSchema.validateAsync(req.body);
     const user = await User.findOne({ username: req.body.username });
 
     if (user) {
@@ -48,15 +36,9 @@ router.post('/', async (req, res) => {
  * * /users/login
  */
 router.post('/login', async (req, res) => {
-  const dataKeys = Object.keys(req.body);
-  const allowedKeys = ['username', 'password'];
-  const isValid = dataKeys.every((dataKey) => allowedKeys.includes(dataKey));
-
-  if (!isValid) {
-    return res.status(400).send(sendJsonError('Invalid data'));
-  }
-
   try {
+    await loginUserSchema.validateAsync(req.body);
+
     const user = await User.findByCredentials(
       req.body.username,
       req.body.password
@@ -113,23 +95,8 @@ router.get('/me', auth, async (req, res) => {
  * * /users/me
  */
 router.patch('/me', auth, async (req, res) => {
-  const updateKeys = Object.keys(req.body);
-  const allowedKeys = [
-    'firstName',
-    'lastName',
-    'username',
-    'email',
-    'password',
-  ];
-  const isValid = updateKeys.every((updateKey) =>
-    allowedKeys.includes(updateKey)
-  );
-
-  if (!isValid) {
-    return res.status(400).send(sendJsonError('Invalid updates'));
-  }
-
   try {
+    await createUserSchema.validateAsync(req.body);
     updateKeys.forEach((update) => (req.user[update] = req.body[update]));
     await req.user.save();
     res.send(req.user);

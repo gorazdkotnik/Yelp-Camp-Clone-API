@@ -1,8 +1,8 @@
 const express = require('express');
 const Campground = require('../models/campground');
-const Comment = require('../models/comment');
-const sendJsonError = require('../helpers/sendJsonError');
+const sendJsonError = require('../utils/sendJsonError');
 const auth = require('../middleware/auth');
+const { createCampgroundSchema } = require('../utils/joi/campgrounds');
 const router = new express.Router();
 
 /**
@@ -10,20 +10,12 @@ const router = new express.Router();
  * * /campgrounds
  */
 router.post('/', auth, async (req, res) => {
-  const dataKeys = Object.keys(req.body);
-  const allowedKeys = ['title', 'image', 'description', 'price'];
-  const isValid = dataKeys.every((dataKey) => allowedKeys.includes(dataKey));
-
-  if (!isValid) {
-    return res.status(400).send(sendJsonError('Invalid data'));
-  }
-
-  const campground = new Campground({
-    ...req.body,
-    owner: req.user._id,
-  });
-
   try {
+    await createCampgroundSchema.validateAsync(req.body);
+    const campground = new Campground({
+      ...req.body,
+      owner: req.user._id,
+    });
     await campground.save();
     res.status(201).send(campground);
   } catch (e) {
@@ -67,17 +59,9 @@ router.get('/:id', async (req, res) => {
  * * /campgrounds/:id
  */
 router.patch('/:id', auth, async (req, res) => {
-  const updateKeys = Object.keys(req.body);
-  const allowedKeys = ['title', 'image', 'description', 'price'];
-  const isValid = updateKeys.every((updateKey) =>
-    allowedKeys.includes(updateKey)
-  );
-
-  if (!isValid) {
-    return res.status(400).send(sendJsonError('Invalid updates'));
-  }
-
   try {
+    await createCampgroundSchema.validateAsync(req.body);
+
     const campground = await Campground.findOne({
       _id: req.params.id,
       owner: req.user._id,

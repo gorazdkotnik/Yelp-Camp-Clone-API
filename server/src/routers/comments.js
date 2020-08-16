@@ -1,8 +1,9 @@
 const express = require('express');
 const Comment = require('../models/comment');
 const Campground = require('../models/campground');
-const sendJsonError = require('../helpers/sendJsonError');
+const sendJsonError = require('../utils/sendJsonError');
 const auth = require('../middleware/auth');
+const { commentCreateSchema } = require('../utils/joi/comments');
 const router = new express.Router({ mergeParams: true });
 
 /**
@@ -10,15 +11,8 @@ const router = new express.Router({ mergeParams: true });
  * * /campgrounds/:id/comments
  */
 router.post('/', auth, async (req, res) => {
-  const dataKeys = Object.keys(req.body);
-  const allowedKeys = ['description'];
-  const isValid = dataKeys.every((dataKey) => allowedKeys.includes(dataKey));
-
-  if (!isValid) {
-    return res.status(400).send(sendJsonError('Invalid data'));
-  }
-
   try {
+    await commentCreateSchema.validateAsync(req.body);
     const campground = await Campground.findOne({ _id: req.params.id });
 
     if (!campground) {
@@ -62,17 +56,8 @@ router.get('/', async (req, res) => {
  * * /campgrounds/:id/comments/:comment_id
  */
 router.patch('/:comment_id', auth, async (req, res) => {
-  const updateKeys = Object.keys(req.body);
-  const allowedKeys = ['description'];
-  const isValid = updateKeys.every((updateKey) =>
-    allowedKeys.includes(updateKey)
-  );
-
-  if (!isValid) {
-    return res.status(400).send(sendJsonError('Invalid updates'));
-  }
-
   try {
+    await commentCreateSchema.validateAsync(req.body);
     const campground = await Campground.findOne({ _id: req.params.id });
 
     if (!campground) {
