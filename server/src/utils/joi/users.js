@@ -2,12 +2,12 @@ const Joi = require('@hapi/joi');
 
 const createUserSchema = Joi.object({
   firstName: Joi.string()
-    .min(3)
+    .min(2)
     .max(30)
     .pattern(/^[a-z]+$/i)
     .required(),
   lastName: Joi.string()
-    .min(3)
+    .min(2)
     .max(30)
     .pattern(/^[a-z]+$/i)
     .required(),

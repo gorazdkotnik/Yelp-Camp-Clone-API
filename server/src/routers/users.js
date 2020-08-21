@@ -12,14 +12,6 @@ const router = new express.Router();
 router.post('/', async (req, res) => {
   try {
     await createUserSchema.validateAsync(req.body);
-    const user = await User.findOne({ username: req.body.username });
-
-    if (user) {
-      return res
-        .status(400)
-        .send(sendJsonError('That username is already registered'));
-    }
-
     const newUser = new User(req.body);
     const token = await newUser.generateAuthToken();
     res.cookie('auth_token', token);
