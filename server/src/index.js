@@ -3,4 +3,8 @@ const app = require('./app');
 const port = process.env.PORT;
 
 // Listener
-app.listen(port, () => console.log(`Server listening on port ${port}....`));
+app.listen(port, () => {
+  if (process.env.NODE_MODE === 'dev') {
+    console.log(`Server listening on port ${port}....`);
+  }
+});

@@ -33,9 +33,10 @@ beforeEach(async () => {
  * * Tests
  * * First Name Field
  */
-test('Should not signup an user without a first name', async () => {
+test('Should not update an user without a first name', async () => {
   await request(app)
-    .post('/users')
+    .patch('/users/me')
+    .set('Cookie', [`auth_token=${userOneToken}`])
     .send({
       lastName: 'Doe',
       username: 'john',
@@ -45,9 +46,10 @@ test('Should not signup an user without a first name', async () => {
     .expect(400);
 });
 
-test('Should not signup an user with short first name', async () => {
+test('Should not update an user with short first name', async () => {
   await request(app)
-    .post('/users')
+    .patch('/users/me')
+    .set('Cookie', [`auth_token=${userOneToken}`])
     .send({
       firstName: 'J',
       lastName: 'Doe',
@@ -58,9 +60,10 @@ test('Should not signup an user with short first name', async () => {
     .expect(400);
 });
 
-test('Should not signup an user with long first name', async () => {
+test('Should not update an user with long first name', async () => {
   await request(app)
-    .post('/users')
+    .patch('/users/me')
+    .set('Cookie', [`auth_token=${userOneToken}`])
     .send({
       firstName: 'j'.repeat(31),
       lastName: 'Doe',
@@ -71,9 +74,10 @@ test('Should not signup an user with long first name', async () => {
     .expect(400);
 });
 
-test('Should not signup an user with non alpha first name', async () => {
+test('Should not update an user with non alpha first name', async () => {
   await request(app)
-    .post('/users')
+    .patch('/users/me')
+    .set('Cookie', [`auth_token=${userOneToken}`])
     .send({
       firstName: 'John1',
       lastName: 'Doe',
@@ -88,9 +92,10 @@ test('Should not signup an user with non alpha first name', async () => {
  * * Tests
  * * Last Name Field
  */
-test('Should not signup an user without a last name', async () => {
+test('Should not update an user without a last name', async () => {
   await request(app)
-    .post('/users')
+    .patch('/users/me')
+    .set('Cookie', [`auth_token=${userOneToken}`])
     .send({
       firstName: 'John',
       username: 'john',
@@ -100,9 +105,10 @@ test('Should not signup an user without a last name', async () => {
     .expect(400);
 });
 
-test('Should not signup an user with short last name', async () => {
+test('Should not update an user with short last name', async () => {
   await request(app)
-    .post('/users')
+    .patch('/users/me')
+    .set('Cookie', [`auth_token=${userOneToken}`])
     .send({
       firstName: 'John',
       lastName: 'D',
@@ -113,9 +119,10 @@ test('Should not signup an user with short last name', async () => {
     .expect(400);
 });
 
-test('Should not signup an user with long last name', async () => {
+test('Should not update an user with long last name', async () => {
   await request(app)
-    .post('/users')
+    .patch('/users/me')
+    .set('Cookie', [`auth_token=${userOneToken}`])
     .send({
       firstName: 'John',
       lastName: 'd'.repeat(31),
@@ -126,9 +133,10 @@ test('Should not signup an user with long last name', async () => {
     .expect(400);
 });
 
-test('Should not signup an user with non alpha last name', async () => {
+test('Should not update an user with non alpha last name', async () => {
   await request(app)
-    .post('/users')
+    .patch('/users/me')
+    .set('Cookie', [`auth_token=${userOneToken}`])
     .send({
       firstName: 'John',
       lastName: 'Doe1',
@@ -143,9 +151,10 @@ test('Should not signup an user with non alpha last name', async () => {
  * * Tests
  * * Username Field
  */
-test('Should not signup an user without an username', async () => {
+test('Should not update an user without an username', async () => {
   await request(app)
-    .post('/users')
+    .patch('/users/me')
+    .set('Cookie', [`auth_token=${userOneToken}`])
     .send({
       firstName: 'John',
       lastName: 'Doe1',
@@ -155,9 +164,10 @@ test('Should not signup an user without an username', async () => {
     .expect(400);
 });
 
-test('Should not signup an user with short username', async () => {
+test('Should not update an user with short username', async () => {
   await request(app)
-    .post('/users')
+    .patch('/users/me')
+    .set('Cookie', [`auth_token=${userOneToken}`])
     .send({
       firstName: 'John',
       lastName: 'Doe1',
@@ -168,9 +178,10 @@ test('Should not signup an user with short username', async () => {
     .expect(400);
 });
 
-test('Should not signup an user with long username', async () => {
+test('Should not update an user with long username', async () => {
   await request(app)
-    .post('/users')
+    .patch('/users/me')
+    .set('Cookie', [`auth_token=${userOneToken}`])
     .send({
       firstName: 'John',
       lastName: 'Doe1',
@@ -181,9 +192,10 @@ test('Should not signup an user with long username', async () => {
     .expect(400);
 });
 
-test('Should not signup an user with non alphanumeric username', async () => {
+test('Should not update an user with non alphanumeric username', async () => {
   await request(app)
-    .post('/users')
+    .patch('/users/me')
+    .set('Cookie', [`auth_token=${userOneToken}`])
     .send({
       firstName: 'John',
       lastName: 'Doe1',
@@ -194,26 +206,14 @@ test('Should not signup an user with non alphanumeric username', async () => {
     .expect(400);
 });
 
-test('Should not create an user with none unique username', async () => {
-  await request(app)
-    .post('/users')
-    .send({
-      firstName: 'John',
-      lastName: 'Doe',
-      username: 'johndoe',
-      email: 'john@gmail.com',
-      password: 'johnSomething123',
-    })
-    .expect(400);
-});
-
 /**
  * * Tests
  * * Email Field
  */
-test('Should not signup an user without an email', async () => {
+test('Should not update an user without an email', async () => {
   await request(app)
-    .post('/users')
+    .patch('/users/me')
+    .set('Cookie', [`auth_token=${userOneToken}`])
     .send({
       firstName: 'John',
       lastName: 'Doe',
@@ -223,9 +223,10 @@ test('Should not signup an user without an email', async () => {
     .expect(400);
 });
 
-test('Should not signup an user with invalid email', async () => {
+test('Should not update an user with invalid email', async () => {
   await request(app)
-    .post('/users')
+    .patch('/users/me')
+    .set('Cookie', [`auth_token=${userOneToken}`])
     .send({
       firstName: 'John',
       lastName: 'Doe',
@@ -240,9 +241,10 @@ test('Should not signup an user with invalid email', async () => {
  * * Tests
  * * Password Field
  */
-test('Should not signup an user without a password', async () => {
+test('Should not update an user without a password', async () => {
   await request(app)
-    .post('/users')
+    .patch('/users/me')
+    .set('Cookie', [`auth_token=${userOneToken}`])
     .send({
       firstName: 'John',
       lastName: 'Doe',
@@ -252,9 +254,10 @@ test('Should not signup an user without a password', async () => {
     .expect(400);
 });
 
-test('Should not signup an user with short password', async () => {
+test('Should not update an user with short password', async () => {
   await request(app)
-    .post('/users')
+    .patch('/users/me')
+    .set('Cookie', [`auth_token=${userOneToken}`])
     .send({
       firstName: 'John',
       lastName: 'Doe',
@@ -265,9 +268,10 @@ test('Should not signup an user with short password', async () => {
     .expect(400);
 });
 
-test('Should not signup an user with long password', async () => {
+test('Should not update an user with long password', async () => {
   await request(app)
-    .post('/users')
+    .patch('/users/me')
+    .set('Cookie', [`auth_token=${userOneToken}`])
     .send({
       firstName: 'John',
       lastName: 'Doe',
@@ -282,13 +286,17 @@ test('Should not signup an user with long password', async () => {
  * * Tests
  * * Entire User Object
  */
-test('Should not signup an user without data', async () => {
-  await request(app).post('/users').send().expect(400);
+test('Should not update an user without data', async () => {
+  await request(app)
+    .patch('/users/me')
+    .set('Cookie', [`auth_token=${userOneToken}`])
+    .send()
+    .expect(400);
 });
 
-test('Should signup an user with valid data', async () => {
+test('Should not update unauthorized user', async () => {
   await request(app)
-    .post('/users')
+    .patch('/users/me')
     .send({
       firstName: 'John',
       lastName: 'Doe',
@@ -296,5 +304,19 @@ test('Should signup an user with valid data', async () => {
       password: 'JohnDoeSomething123',
       email: 'john@gmail.com',
     })
-    .expect(201);
+    .expect(401);
+});
+
+test('Should update an user with valid data', async () => {
+  await request(app)
+    .patch('/users/me')
+    .set('Cookie', [`auth_token=${userOneToken}`])
+    .send({
+      firstName: 'John',
+      lastName: 'Doe',
+      username: 'john',
+      password: 'JohnDoeSomething123',
+      email: 'john@gmail.com',
+    })
+    .expect(200);
 });

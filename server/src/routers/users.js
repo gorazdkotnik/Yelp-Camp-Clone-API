@@ -12,6 +12,7 @@ const router = new express.Router();
 router.post('/', async (req, res) => {
   try {
     await createUserSchema.validateAsync(req.body);
+
     const newUser = new User(req.body);
     const token = await newUser.generateAuthToken();
     res.cookie('auth_token', token);
@@ -89,7 +90,6 @@ router.get('/me', auth, async (req, res) => {
 router.patch('/me', auth, async (req, res) => {
   try {
     await createUserSchema.validateAsync(req.body);
-    updateKeys.forEach((update) => (req.user[update] = req.body[update]));
     await req.user.save();
     res.send(req.user);
   } catch (e) {
