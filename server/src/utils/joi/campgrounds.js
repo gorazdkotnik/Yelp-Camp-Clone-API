@@ -5,10 +5,11 @@ const createCampgroundSchema = Joi.object({
     .min(4)
     .max(20)
     .pattern(/^[a-zA-Z0-9\s]{4,20}$/)
+    .trim()
     .required(),
-  image: Joi.string().required(),
-  description: Joi.string().min(20).max(2500).required(),
-  price: Joi.number().min(1).max(1000),
+  image: Joi.string().trim().required(),
+  description: Joi.string().min(20).max(2500).trim().required(),
+  price: Joi.number().min(1).max(1000).trim().required(),
 });
 
 module.exports = {
