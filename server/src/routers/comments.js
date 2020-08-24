@@ -1,9 +1,16 @@
+/**
+ * * Modules
+ * * Imports
+ */
 const express = require('express');
 const Comment = require('../models/comment');
 const Campground = require('../models/campground');
 const sendJsonError = require('../utils/sendJsonError');
 const auth = require('../middleware/auth');
-const { commentCreateSchema } = require('../utils/joi/comments');
+const {
+  commentCreateSchema,
+  commentUpdateSchema,
+} = require('../utils/joi/comments');
 const router = new express.Router({ mergeParams: true });
 
 /**
@@ -57,8 +64,9 @@ router.get('/', async (req, res) => {
  */
 router.patch('/:comment_id', auth, async (req, res) => {
   try {
-    await commentCreateSchema.validateAsync(req.body);
+    await commentUpdateSchema.validateAsync(req.body);
     const campground = await Campground.findOne({ _id: req.params.id });
+    const updateKeys = Object.keys(req.body);
 
     if (!campground) {
       return res.status(404).send();

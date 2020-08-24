@@ -1,8 +1,15 @@
+/**
+ * * Modules
+ * * Imports
+ */
 const express = require('express');
 const Campground = require('../models/campground');
 const sendJsonError = require('../utils/sendJsonError');
 const auth = require('../middleware/auth');
-const { createCampgroundSchema } = require('../utils/joi/campgrounds');
+const {
+  createCampgroundSchema,
+  updateCampgroundSchema,
+} = require('../utils/joi/campgrounds');
 const router = new express.Router();
 
 /**
@@ -60,7 +67,8 @@ router.get('/:id', async (req, res) => {
  */
 router.patch('/:id', auth, async (req, res) => {
   try {
-    await createCampgroundSchema.validateAsync(req.body);
+    await updateCampgroundSchema.validateAsync(req.body);
+    const updateKeys = Object.keys(req.body);
 
     const campground = await Campground.findOne({
       _id: req.params.id,

@@ -1,5 +1,12 @@
+/**
+ * * Modules
+ * * Imports
+ */
 const mongoose = require('mongoose');
 
+/**
+ * * Connecting To Database
+ */
 mongoose
   .connect(process.env.MONGO_URL, {
     useNewUrlParser: true,

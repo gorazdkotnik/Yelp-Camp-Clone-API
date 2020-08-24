@@ -1,3 +1,7 @@
+/**
+ * * Modules
+ * * Imports
+ */
 const express = require('express');
 const sendJsonError = require('../utils/sendJsonError');
 const User = require('../models/user');

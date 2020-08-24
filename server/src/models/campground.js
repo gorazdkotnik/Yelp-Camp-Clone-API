@@ -1,9 +1,18 @@
+/**
+ * * Modules
+ * * Imports
+ */
 const mongoose = require('mongoose');
 const validator = require('validator');
 const Comment = require('./comment');
 
+/**
+ * * Schema
+ * * Campground
+ */
 const campgroundSchema = new mongoose.Schema(
   {
+    // Title
     title: {
       type: String,
       required: true,
@@ -18,6 +27,7 @@ const campgroundSchema = new mongoose.Schema(
         }
       },
     },
+    // Description
     description: {
       type: String,
       required: true,
@@ -25,6 +35,7 @@ const campgroundSchema = new mongoose.Schema(
       minlength: 20,
       maxlength: 2500,
     },
+    // Image
     image: {
       type: String,
       required: true,
@@ -35,12 +46,14 @@ const campgroundSchema = new mongoose.Schema(
         }
       },
     },
+    // Price
     price: {
       type: Number,
       required: true,
       min: 1,
       max: 1000,
     },
+    // Owner
     owner: {
       type: mongoose.Schema.Types.ObjectId,
       required: true,
@@ -48,22 +61,30 @@ const campgroundSchema = new mongoose.Schema(
     },
   },
   {
+    // Config
     timestamps: true,
     toJSON: { virtuals: true },
   }
 );
 
+/**
+ * * Virtual Comments Property
+ */
 campgroundSchema.virtual('comments', {
   ref: 'Comment',
   localField: '_id',
   foreignField: 'campground',
 });
 
+/**
+ * * Delete Comments before deleting Campground
+ */
 campgroundSchema.pre('deleteOne', { document: true }, async function (next) {
   const campground = this;
   await Comment.deleteMany({ campground: campground._id });
   next();
 });
 
+// Model Campground and export it
 const Campground = mongoose.model('Campground', campgroundSchema);
 module.exports = Campground;
