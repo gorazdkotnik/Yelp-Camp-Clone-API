@@ -9,7 +9,7 @@ const createCampgroundSchema = Joi.object({
     .required(),
   image: Joi.string().trim().required(),
   description: Joi.string().min(20).max(2500).trim().required(),
-  price: Joi.number().min(1).max(1000).trim().required(),
+  price: Joi.number().min(1).max(1000).required(),
 });
 
 module.exports = {

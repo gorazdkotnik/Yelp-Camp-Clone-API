@@ -1,33 +1,13 @@
+/**
+ * * Modules
+ * * Imports
+ */
 const request = require('supertest');
 const app = require('../../src/app');
-const jwt = require('jsonwebtoken');
-const mongoose = require('mongoose');
+const { setupDatabase } = require('../fixtures/db');
 const User = require('../../src/models/user');
 
-const userOneId = new mongoose.Types.ObjectId();
-const userOneToken = jwt.sign(
-  { _id: userOneId.toString() },
-  process.env.JWT_SECRET
-);
-
-const userOne = {
-  firstName: 'John',
-  lastName: 'Doe',
-  username: 'johndoe',
-  email: 'john@gmail.com',
-  password: 'johnSomething123',
-  _id: userOneId,
-  tokens: [
-    {
-      token: userOneToken,
-    },
-  ],
-};
-
-beforeEach(async () => {
-  await User.deleteMany();
-  await new User(userOne).save();
-});
+beforeEach(setupDatabase);
 
 /**
  * * Tests
@@ -43,6 +23,9 @@ test('Should not signup an user without a first name', async () => {
       password: 'johnSomething123',
     })
     .expect(400);
+
+  const users = await User.find({});
+  expect(users.length).toBe(2);
 });
 
 test('Should not signup an user with short first name', async () => {
@@ -56,6 +39,9 @@ test('Should not signup an user with short first name', async () => {
       password: 'johnSomething123',
     })
     .expect(400);
+
+  const users = await User.find({});
+  expect(users.length).toBe(2);
 });
 
 test('Should not signup an user with long first name', async () => {
@@ -69,6 +55,9 @@ test('Should not signup an user with long first name', async () => {
       password: 'johnSomething123',
     })
     .expect(400);
+
+  const users = await User.find({});
+  expect(users.length).toBe(2);
 });
 
 test('Should not signup an user with non alpha first name', async () => {
@@ -82,6 +71,9 @@ test('Should not signup an user with non alpha first name', async () => {
       password: 'johnSomething123',
     })
     .expect(400);
+
+  const users = await User.find({});
+  expect(users.length).toBe(2);
 });
 
 /**
@@ -98,6 +90,9 @@ test('Should not signup an user without a last name', async () => {
       password: 'johnSomething123',
     })
     .expect(400);
+
+  const users = await User.find({});
+  expect(users.length).toBe(2);
 });
 
 test('Should not signup an user with short last name', async () => {
@@ -111,6 +106,9 @@ test('Should not signup an user with short last name', async () => {
       password: 'johnSomething123',
     })
     .expect(400);
+
+  const users = await User.find({});
+  expect(users.length).toBe(2);
 });
 
 test('Should not signup an user with long last name', async () => {
@@ -124,6 +122,9 @@ test('Should not signup an user with long last name', async () => {
       password: 'johnSomething123',
     })
     .expect(400);
+
+  const users = await User.find({});
+  expect(users.length).toBe(2);
 });
 
 test('Should not signup an user with non alpha last name', async () => {
@@ -137,6 +138,9 @@ test('Should not signup an user with non alpha last name', async () => {
       password: 'johnSomething123',
     })
     .expect(400);
+
+  const users = await User.find({});
+  expect(users.length).toBe(2);
 });
 
 /**
@@ -153,6 +157,9 @@ test('Should not signup an user without an username', async () => {
       password: 'johnSomething123',
     })
     .expect(400);
+
+  const users = await User.find({});
+  expect(users.length).toBe(2);
 });
 
 test('Should not signup an user with short username', async () => {
@@ -166,6 +173,9 @@ test('Should not signup an user with short username', async () => {
       password: 'johnSomething123',
     })
     .expect(400);
+
+  const users = await User.find({});
+  expect(users.length).toBe(2);
 });
 
 test('Should not signup an user with long username', async () => {
@@ -179,6 +189,9 @@ test('Should not signup an user with long username', async () => {
       password: 'johnSomething123',
     })
     .expect(400);
+
+  const users = await User.find({});
+  expect(users.length).toBe(2);
 });
 
 test('Should not signup an user with non alphanumeric username', async () => {
@@ -192,9 +205,12 @@ test('Should not signup an user with non alphanumeric username', async () => {
       password: 'johnSomething123',
     })
     .expect(400);
+
+  const users = await User.find({});
+  expect(users.length).toBe(2);
 });
 
-test('Should not create an user with none unique username', async () => {
+test('Should not signup an user with none unique username', async () => {
   await request(app)
     .post('/users')
     .send({
@@ -205,6 +221,9 @@ test('Should not create an user with none unique username', async () => {
       password: 'johnSomething123',
     })
     .expect(400);
+
+  const users = await User.find({});
+  expect(users.length).toBe(2);
 });
 
 /**
@@ -221,6 +240,9 @@ test('Should not signup an user without an email', async () => {
       password: 'johnSomething123',
     })
     .expect(400);
+
+  const users = await User.find({});
+  expect(users.length).toBe(2);
 });
 
 test('Should not signup an user with invalid email', async () => {
@@ -234,6 +256,9 @@ test('Should not signup an user with invalid email', async () => {
       password: 'johnSomething123',
     })
     .expect(400);
+
+  const users = await User.find({});
+  expect(users.length).toBe(2);
 });
 
 /**
@@ -250,6 +275,9 @@ test('Should not signup an user without a password', async () => {
       email: 'john@gmail.com',
     })
     .expect(400);
+
+  const users = await User.find({});
+  expect(users.length).toBe(2);
 });
 
 test('Should not signup an user with short password', async () => {
@@ -263,6 +291,9 @@ test('Should not signup an user with short password', async () => {
       email: 'john@gmail.com',
     })
     .expect(400);
+
+  const users = await User.find({});
+  expect(users.length).toBe(2);
 });
 
 test('Should not signup an user with long password', async () => {
@@ -276,6 +307,9 @@ test('Should not signup an user with long password', async () => {
       email: 'john@gmail.com',
     })
     .expect(400);
+
+  const users = await User.find({});
+  expect(users.length).toBe(2);
 });
 
 /**
@@ -284,10 +318,30 @@ test('Should not signup an user with long password', async () => {
  */
 test('Should not signup an user without data', async () => {
   await request(app).post('/users').send().expect(400);
+
+  const users = await User.find({});
+  expect(users.length).toBe(2);
+});
+
+test('Should not signup an user with invalid keys', async () => {
+  await request(app)
+    .post('/users')
+    .send({
+      firstName: 'John',
+      lastName: 'Doe',
+      username: 'john',
+      password: 'JohnDoeSomething123',
+      email: 'john@gmail.com',
+      something: 'not valid',
+    })
+    .expect(400);
+
+  const users = await User.find({});
+  expect(users.length).toBe(2);
 });
 
 test('Should signup an user with valid data', async () => {
-  await request(app)
+  const response = await request(app)
     .post('/users')
     .send({
       firstName: 'John',
@@ -297,4 +351,14 @@ test('Should signup an user with valid data', async () => {
       email: 'john@gmail.com',
     })
     .expect(201);
+
+  const user = await User.find({ username: 'john' });
+  expect(user).toBeDefined();
+
+  expect(response.body.user).toMatchObject({
+    firstName: 'John',
+    lastName: 'Doe',
+    username: 'john',
+    email: 'john@gmail.com',
+  });
 });

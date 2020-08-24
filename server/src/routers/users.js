@@ -2,7 +2,11 @@ const express = require('express');
 const sendJsonError = require('../utils/sendJsonError');
 const User = require('../models/user');
 const auth = require('../middleware/auth');
-const { createUserSchema, loginUserSchema } = require('../utils/joi/users');
+const {
+  createUserSchema,
+  loginUserSchema,
+  updateUserSchema,
+} = require('../utils/joi/users');
 const router = new express.Router();
 
 /**
@@ -89,8 +93,14 @@ router.get('/me', auth, async (req, res) => {
  */
 router.patch('/me', auth, async (req, res) => {
   try {
-    await createUserSchema.validateAsync(req.body);
+    await updateUserSchema.validateAsync(req.body);
+
+    const updateKeys = Object.keys(req.body);
+    updateKeys.forEach(
+      (updateKey) => (req.user[updateKey] = req.body[updateKey])
+    );
     await req.user.save();
+
     res.send(req.user);
   } catch (e) {
     res.status(400).send(sendJsonError(e.message, e.stack));
