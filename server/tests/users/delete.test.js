@@ -1,12 +1,12 @@
 const request = require('supertest');
 const app = require('../../src/app');
 const {
+  User,
+  Campground,
+  Comment,
   userOneId,
   userOneToken,
-  userOne,
   userTwoId,
-  userTwoToken,
-  userTwo,
   setupDatabase,
 } = require('../fixtures/db');
 
@@ -22,4 +22,14 @@ test('Should delete authorized user', async () => {
     .send()
     .set('Cookie', [`auth_token=${userOneToken}`])
     .expect(200);
+
+  const userOne = await User.findOne({ _id: userOneId });
+  const userTwo = await User.findOne({ _id: userTwoId });
+  const campgrounds = await Campground.find({ owner: userOneId });
+  const comments = await Comment.find({ owner: userOneId });
+
+  expect(userOne).toBeNull();
+  expect(userTwo).not.toBeNull();
+  expect(campgrounds.length).toBe(0);
+  expect(comments.length).toBe(0);
 });
