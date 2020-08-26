@@ -99,5 +99,7 @@ module.exports = {
   userTwoId,
   userTwoToken,
   userTwo,
+  campgroundOne,
+  campgroundOneId,
   setupDatabase,
 };

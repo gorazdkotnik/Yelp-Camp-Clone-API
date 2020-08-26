@@ -6,12 +6,13 @@ const express = require('express');
 const sendJsonError = require('../utils/sendJsonError');
 const User = require('../models/user');
 const auth = require('../middleware/auth');
+const router = new express.Router();
+
 const {
   createUserSchema,
   loginUserSchema,
   updateUserSchema,
 } = require('../utils/joi/users');
-const router = new express.Router();
 
 /**
  * * POST
@@ -44,6 +45,7 @@ router.post('/login', async (req, res) => {
       req.body.username,
       req.body.password
     );
+
     const token = await user.generateAuthToken();
     res.cookie('auth_token', token);
 
@@ -62,6 +64,7 @@ router.post('/logout', auth, async (req, res) => {
     req.user.tokens = req.user.tokens.filter(
       (token) => token.token !== req.token
     );
+
     await req.user.save();
     res.send();
   } catch (e) {
@@ -98,13 +101,13 @@ router.get('/me', auth, async (req, res) => {
 router.patch('/me', auth, async (req, res) => {
   try {
     await updateUserSchema.validateAsync(req.body);
-
     const updateKeys = Object.keys(req.body);
+
     updateKeys.forEach(
       (updateKey) => (req.user[updateKey] = req.body[updateKey])
     );
-    await req.user.save();
 
+    await req.user.save();
     res.send(req.user);
   } catch (e) {
     res.status(400).send(sendJsonError(e.message, e.stack));

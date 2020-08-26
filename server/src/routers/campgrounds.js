@@ -6,11 +6,12 @@ const express = require('express');
 const Campground = require('../models/campground');
 const sendJsonError = require('../utils/sendJsonError');
 const auth = require('../middleware/auth');
+const router = new express.Router();
+
 const {
   createCampgroundSchema,
   updateCampgroundSchema,
 } = require('../utils/joi/campgrounds');
-const router = new express.Router();
 
 /**
  * * POST
@@ -19,10 +20,12 @@ const router = new express.Router();
 router.post('/', auth, async (req, res) => {
   try {
     await createCampgroundSchema.validateAsync(req.body);
+
     const campground = new Campground({
       ...req.body,
       owner: req.user._id,
     });
+
     await campground.save();
     res.status(201).send(campground);
   } catch (e) {

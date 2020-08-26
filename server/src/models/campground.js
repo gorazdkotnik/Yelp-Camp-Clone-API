@@ -23,7 +23,9 @@ const campgroundSchema = new mongoose.Schema(
         const regex = /^[a-zA-Z0-9\s]{4,20}$/;
 
         if (!regex.test(value)) {
-          throw new Error('Title can contain only letters and spaces');
+          throw new Error(
+            'Title can contain only alphanumeric characters and spaces'
+          );
         }
       },
     },

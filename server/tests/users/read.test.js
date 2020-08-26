@@ -8,8 +8,8 @@ const {
   userTwoToken,
   userTwo,
   setupDatabase,
+  User,
 } = require('../fixtures/db');
-const User = require('../../src/models/user');
 
 beforeEach(setupDatabase);
 
