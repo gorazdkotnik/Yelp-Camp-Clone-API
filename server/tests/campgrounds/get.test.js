@@ -4,7 +4,7 @@
  */
 const app = require('../../src/app');
 const request = require('supertest');
-const { setupDatabase, userOneToken, Campground } = require('../fixtures/db');
+const { setupDatabase } = require('../fixtures/db');
 
 beforeEach(setupDatabase);
 
