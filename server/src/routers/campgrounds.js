@@ -5,6 +5,7 @@
 const express = require('express');
 const Campground = require('../models/campground');
 const sendJsonError = require('../utils/sendJsonError');
+const escapeRegex = require('../utils/fuzzySearch');
 const auth = require('../middleware/auth');
 const router = new express.Router();
 
@@ -38,8 +39,26 @@ router.post('/', auth, async (req, res) => {
  * * /campgrounds
  */
 router.get('/', async (req, res) => {
+  const match = {};
+  const sort = {};
+
+  if (req.query.title) {
+    const regex = new RegExp(escapeRegex(req.query.title), 'gi');
+    match.title = regex;
+  }
+
+  if (req.query.sortBy) {
+    const parts = req.query.sortBy.split(':');
+    sort[parts[0]] = parts[1] === 'desc' ? -1 : 1;
+  }
+
   try {
-    const campgrounds = await Campground.find({});
+    const campgrounds = await Campground.find(match, null, {
+      limit: parseInt(req.query.limit),
+      skip: parseInt(req.query.skip),
+      sort,
+    });
+
     res.send(campgrounds);
   } catch (e) {
     res.status(500).send(sendJsonError(e.message, e.stack));
