@@ -44,6 +44,13 @@ router.post('/', auth, async (req, res) => {
  * * /campgrounds/:id/comments
  */
 router.get('/', async (req, res) => {
+  const sort = {};
+
+  if (req.query.sortBy) {
+    const parts = req.query.sortBy.split(':');
+    sort[parts[0]] = parts[1] === 'desc' ? -1 : 1;
+  }
+
   try {
     const campground = await Campground.findOne({ _id: req.params.id });
 
@@ -51,7 +58,17 @@ router.get('/', async (req, res) => {
       return res.status(404).send();
     }
 
-    await campground.populate('comments').execPopulate();
+    await campground
+      .populate({
+        path: 'comments',
+        options: {
+          limit: parseInt(req.query.limit),
+          skip: parseInt(req.query.skip),
+          sort,
+        },
+      })
+      .execPopulate();
+
     res.send(campground.comments);
   } catch (e) {
     res.status(500).send(sendJsonError(e.message, e.stack));
