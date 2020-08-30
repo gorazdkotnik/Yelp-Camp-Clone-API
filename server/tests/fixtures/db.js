@@ -101,5 +101,6 @@ module.exports = {
   userTwo,
   campgroundOne,
   campgroundOneId,
+  commentOneId,
   setupDatabase,
 };
