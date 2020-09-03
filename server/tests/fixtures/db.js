@@ -101,9 +101,33 @@ const campgroundFour = {
  */
 const commentOneId = new mongoose.Types.ObjectId();
 const commentOne = {
-  description: 'Amazing!',
+  description: 'Comment 1',
   campground: campgroundOneId,
   _id: commentOneId,
+  owner: userOneId,
+};
+
+const commentTwoId = new mongoose.Types.ObjectId();
+const commentTwo = {
+  description: 'Comment 2',
+  campground: campgroundOneId,
+  _id: commentTwoId,
+  owner: userOneId,
+};
+
+const commentThreeId = new mongoose.Types.ObjectId();
+const commentThree = {
+  description: 'Comment 3',
+  campground: campgroundOneId,
+  _id: commentThreeId,
+  owner: userOneId,
+};
+
+const commentFourId = new mongoose.Types.ObjectId();
+const commentFour = {
+  description: 'Comment 4',
+  campground: campgroundOneId,
+  _id: commentFourId,
   owner: userOneId,
 };
 
@@ -121,6 +145,9 @@ const setupDatabase = async () => {
   await new Campground(campgroundFour).save();
 
   await new Comment(commentOne).save();
+  await new Comment(commentTwo).save();
+  await new Comment(commentThree).save();
+  await new Comment(commentFour).save();
 };
 
 module.exports = {
