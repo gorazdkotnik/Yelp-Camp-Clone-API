@@ -36,42 +36,12 @@ test('Should not delete comment with invalid campground id', async () => {
   expect(comment).not.toBeNull();
 });
 
-test('Should not delete comment with wrong campground id', async () => {
-  await request(app)
-    .delete(
-      `/campgrounds/${campgroundOneId
-        .toString()
-        .slice(0, -1)}9/comments/${commentOneId}`
-    )
-    .set('Cookie', [`auth_token="${userOneToken}"`])
-    .send()
-    .expect(404);
-
-  const comment = await Comment.findById(commentOneId);
-  expect(comment).not.toBeNull();
-});
-
 test('Should not delete comment with invalid comment id', async () => {
   await request(app)
     .delete(`/campgrounds/${campgroundOneId}/comments/${commentOneId}asfasf`)
     .set('Cookie', [`auth_token="${userOneToken}"`])
     .send()
     .expect(500);
-
-  const comment = await Comment.findById(commentOneId);
-  expect(comment).not.toBeNull();
-});
-
-test('Should not delete comment with wrong comment id', async () => {
-  await request(app)
-    .delete(
-      `/campgrounds/${campgroundOneId}/comments/${commentOneId
-        .toString()
-        .slice(0, -1)}3`
-    )
-    .set('Cookie', [`auth_token="${userOneToken}"`])
-    .send()
-    .expect(404);
 
   const comment = await Comment.findById(commentOneId);
   expect(comment).not.toBeNull();
