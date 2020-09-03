@@ -28,7 +28,7 @@ test('Should not create a comment without description', async () => {
   const campground = await Campground.findById(campgroundOneId).populate(
     'comments'
   );
-  expect(campground.comments.length).toBe(1);
+  expect(campground.comments.length).toBe(4);
 });
 
 test('Should not create a comment without campground', async () => {
@@ -43,7 +43,7 @@ test('Should not create a comment without campground', async () => {
   const campground = await Campground.findById(campgroundOneId).populate(
     'comments'
   );
-  expect(campground.comments.length).toBe(1);
+  expect(campground.comments.length).toBe(4);
 });
 
 test('Should not create a comment without an owner', async () => {
@@ -57,7 +57,7 @@ test('Should not create a comment without an owner', async () => {
   const campground = await Campground.findById(campgroundOneId).populate(
     'comments'
   );
-  expect(campground.comments.length).toBe(1);
+  expect(campground.comments.length).toBe(4);
 });
 
 test('Should not create a comment with long description', async () => {
@@ -72,7 +72,7 @@ test('Should not create a comment with long description', async () => {
   const campground = await Campground.findById(campgroundOneId).populate(
     'comments'
   );
-  expect(campground.comments.length).toBe(1);
+  expect(campground.comments.length).toBe(4);
 });
 
 test('Should create a comment', async () => {
@@ -89,6 +89,6 @@ test('Should create a comment', async () => {
   );
   const comment = await Comment.findOne({ description: 'This is awesome!!!' });
 
-  expect(campground.comments.length).toBe(2);
+  expect(campground.comments.length).toBe(5);
   expect(comment).not.toBeNull();
 });

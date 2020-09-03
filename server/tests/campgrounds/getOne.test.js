@@ -20,10 +20,3 @@ test('Should get campground by id', async () => {
 test('Should not get campground with invalid id', async () => {
   await request(app).get('/campgrounds/a141fa').send().expect(500);
 });
-
-test('Should not get campground with wrong id', async () => {
-  await request(app)
-    .get(`/campgrounds/${campgroundOneId.toString().slice(0, -1)}1`)
-    .send()
-    .expect(404);
-});
