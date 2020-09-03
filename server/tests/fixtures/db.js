@@ -58,11 +58,41 @@ const userTwo = {
  */
 const campgroundOneId = new mongoose.Types.ObjectId();
 const campgroundOne = {
+  title: 'Campground 1',
+  image: 'https://image.com',
+  description: 'This is description for Campground 1',
+  price: '9.00',
+  _id: campgroundOneId,
+  owner: userOneId,
+};
+
+const campgroundTwoId = new mongoose.Types.ObjectId();
+const campgroundTwo = {
   title: 'Campground 2',
   image: 'https://image.com',
   description: 'This is description for Campground 2',
   price: '9.00',
-  _id: campgroundOneId,
+  _id: campgroundTwoId,
+  owner: userOneId,
+};
+
+const campgroundThreeId = new mongoose.Types.ObjectId();
+const campgroundThree = {
+  title: 'Campground 3',
+  image: 'https://image.com',
+  description: 'This is description for Campground 3',
+  price: '9.00',
+  _id: campgroundThreeId,
+  owner: userOneId,
+};
+
+const campgroundFourId = new mongoose.Types.ObjectId();
+const campgroundFour = {
+  title: 'Campground 4',
+  image: 'https://image.com',
+  description: 'This is description for Campground 4',
+  price: '9.00',
+  _id: campgroundFourId,
   owner: userOneId,
 };
 
@@ -86,6 +116,10 @@ const setupDatabase = async () => {
   await new User(userTwo).save();
 
   await new Campground(campgroundOne).save();
+  await new Campground(campgroundTwo).save();
+  await new Campground(campgroundThree).save();
+  await new Campground(campgroundFour).save();
+
   await new Comment(commentOne).save();
 };
 

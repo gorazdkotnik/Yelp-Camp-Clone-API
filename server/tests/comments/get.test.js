@@ -17,15 +17,6 @@ test('Should not get comments with invalid campground id', async () => {
   expect(response.body).toHaveProperty('error');
 });
 
-test('Should not get comments with wrong campground id', async () => {
-  const response = await request(app)
-    .get(`/campgrounds/${campgroundOneId.toString().slice(0, -1)}9/comments`)
-    .send()
-    .expect(404);
-
-  expect(response.body).toEqual({});
-});
-
 test('Should get comments', async () => {
   const response = await request(app)
     .get(`/campgrounds/${campgroundOneId}/comments`)
