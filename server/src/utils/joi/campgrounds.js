@@ -12,7 +12,6 @@ const createCampgroundSchema = Joi.object({
     .pattern(/^[a-zA-Z0-9\s]{4,20}$/)
     .trim()
     .required(),
-  image: Joi.string().trim().required(),
   description: Joi.string().min(20).max(2500).trim().required(),
   price: Joi.number().min(1).max(1000).required(),
 });
@@ -24,7 +23,6 @@ const updateCampgroundSchema = Joi.object({
     .max(20)
     .pattern(/^[a-zA-Z0-9\s]{4,20}$/)
     .trim(),
-  image: Joi.string().trim(),
   description: Joi.string().min(20).max(2500).trim(),
   price: Joi.number().min(1).max(1000),
 });

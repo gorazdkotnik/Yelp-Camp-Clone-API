@@ -7,6 +7,8 @@ const Campground = require('../models/campground');
 const sendJsonError = require('../utils/sendJsonError');
 const escapeRegex = require('../utils/fuzzySearch');
 const auth = require('../middleware/auth');
+const upload = require('../utils/multer/campground');
+const sharp = require('sharp');
 const router = new express.Router();
 
 const {
@@ -128,6 +130,81 @@ router.delete('/:id', auth, async (req, res) => {
     res.send(campground);
   } catch (e) {
     res.status(500).send(sendJsonError(e.message, e.stack));
+  }
+});
+
+/**
+ * * POST
+ * * /campgrounds/:id/image
+ */
+router.post(
+  '/:id/image',
+  auth,
+  upload.single('image'),
+  async (req, res) => {
+    const campground = await Campground.findOne({
+      _id: req.params.id,
+      owner: req.user._id,
+    });
+
+    if (!campground) {
+      return res.status(404).send();
+    }
+
+    const buffer = await sharp(req.file.buffer)
+      .resize({ width: 800, height: 800 })
+      .png()
+      .toBuffer();
+    campground.image = buffer;
+    await campground.save();
+    res.send();
+  },
+  (error, req, res, next) => {
+    res.status(400).send(sendJsonError(error.message));
+  }
+);
+
+/**
+ * * GET
+ * * /campgrounds/:id/image
+ */
+router.get('/:id/image', async (req, res) => {
+  try {
+    const campground = await Campground.findOne({
+      _id: req.params.id,
+    });
+
+    if (!campground || !campground.image) {
+      return res.status(404).send();
+    }
+
+    res.set('Content-Type', 'image/png');
+    res.send(campground.image);
+  } catch (e) {
+    res.status(404).send(sendJsonError(e.message));
+  }
+});
+
+/**
+ * * DELETE
+ * * /campgrounds/:id/image
+ */
+router.delete('/:id/image', auth, async (req, res) => {
+  try {
+    const campground = await Campground.findOne({
+      _id: req.params.id,
+      owner: req.user._id,
+    });
+
+    if (!campground) {
+      return res.status(404).send();
+    }
+
+    campground.image = undefined;
+    await campground.save();
+    res.send();
+  } catch (e) {
+    res.status(400).send(sendJsonError(e.message));
   }
 });
 

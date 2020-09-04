@@ -129,41 +129,6 @@ test('Should not create campground with long description', async () => {
 
 /**
  * * Tests
- * * Image Field
- */
-test('Should not create campground without an image', async () => {
-  await request(app)
-    .post('/campgrounds')
-    .set('Cookie', [`auth_token=${userOneToken}`])
-    .send({
-      title: 'Invalid Image',
-      description: 't'.repeat(2501),
-      price: '5.00',
-    })
-    .expect(400);
-
-  const campground = await Campground.findOne({ title: 'Invalid Image' });
-  expect(campground).toBeNull();
-});
-
-test('Should not create campground with invalid image value', async () => {
-  await request(app)
-    .post('/campgrounds')
-    .set('Cookie', [`auth_token=${userOneToken}`])
-    .send({
-      title: 'Invalid Image',
-      description: 't'.repeat(2501),
-      image: 'invalid',
-      price: '5.00',
-    })
-    .expect(400);
-
-  const campground = await Campground.findOne({ title: 'Invalid Image' });
-  expect(campground).toBeNull();
-});
-
-/**
- * * Tests
  * * Price Field
  */
 test('Should not create campground without price', async () => {

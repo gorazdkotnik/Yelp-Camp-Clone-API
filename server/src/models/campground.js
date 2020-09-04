@@ -37,23 +37,15 @@ const campgroundSchema = new mongoose.Schema(
       minlength: 20,
       maxlength: 2500,
     },
-    // Image
-    image: {
-      type: String,
-      required: true,
-      trim: true,
-      validate(value) {
-        if (!validator.isURL(value)) {
-          throw new Error('Invalid image URL');
-        }
-      },
-    },
     // Price
     price: {
       type: Number,
       required: true,
       min: 1,
       max: 1000,
+    },
+    image: {
+      type: Buffer,
     },
     // Owner
     owner: {

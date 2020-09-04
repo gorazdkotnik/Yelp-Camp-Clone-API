@@ -84,23 +84,6 @@ test('Should not update title with non alphanumeric title', async () => {
 
 /**
  * * Tests
- * * Image Field
- */
-test('Should not update image with invalid image URL', async () => {
-  await request(app)
-    .patch(`/campgrounds/${campgroundOneId}`)
-    .set('Cookie', [`auth_token=${userOneToken}`])
-    .send({
-      image: 'invalid',
-    })
-    .expect(400);
-
-  const campground = await Campground.findOne({ _id: campgroundOneId });
-  expect(campground.image).not.toBe('invalid');
-});
-
-/**
- * * Tests
  * * Description Field
  */
 test('Should not update description with short description', async () => {
