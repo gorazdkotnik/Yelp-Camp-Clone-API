@@ -3,6 +3,7 @@
  */
 const jwt = require('jsonwebtoken');
 const mongoose = require('mongoose');
+const crypto = require('crypto');
 const User = require('../../src/models/user');
 const Campground = require('../../src/models/campground');
 const Comment = require('../../src/models/comment');
@@ -46,6 +47,7 @@ const userTwo = {
   email: 'mike@gmail.com',
   password: 'mikeSomething123',
   _id: userTwoId,
+  avatar: crypto.randomBytes(64),
   tokens: [
     {
       token: userTwoToken,
@@ -59,7 +61,6 @@ const userTwo = {
 const campgroundOneId = new mongoose.Types.ObjectId();
 const campgroundOne = {
   title: 'Campground 1',
-  image: 'https://image.com',
   description: 'This is description for Campground 1',
   price: '9.00',
   _id: campgroundOneId,
@@ -69,7 +70,6 @@ const campgroundOne = {
 const campgroundTwoId = new mongoose.Types.ObjectId();
 const campgroundTwo = {
   title: 'Campground 2',
-  image: 'https://image.com',
   description: 'This is description for Campground 2',
   price: '9.00',
   _id: campgroundTwoId,
@@ -79,7 +79,6 @@ const campgroundTwo = {
 const campgroundThreeId = new mongoose.Types.ObjectId();
 const campgroundThree = {
   title: 'Campground 3',
-  image: 'https://image.com',
   description: 'This is description for Campground 3',
   price: '9.00',
   _id: campgroundThreeId,
@@ -89,7 +88,6 @@ const campgroundThree = {
 const campgroundFourId = new mongoose.Types.ObjectId();
 const campgroundFour = {
   title: 'Campground 4',
-  image: 'https://image.com',
   description: 'This is description for Campground 4',
   price: '9.00',
   _id: campgroundFourId,
