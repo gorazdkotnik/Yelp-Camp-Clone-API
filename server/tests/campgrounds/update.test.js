@@ -91,7 +91,7 @@ test('Should not update description with short description', async () => {
     .patch(`/campgrounds/${campgroundOneId}`)
     .set('Cookie', [`auth_token=${userOneToken}`])
     .send({
-      image: 'a'.repeat(10),
+      description: 'a'.repeat(10),
     })
     .expect(400);
 
@@ -104,7 +104,7 @@ test('Should not update description with long description', async () => {
     .patch(`/campgrounds/${campgroundOneId}`)
     .set('Cookie', [`auth_token=${userOneToken}`])
     .send({
-      image: 'a'.repeat(2501),
+      description: 'a'.repeat(2501),
     })
     .expect(400);
 

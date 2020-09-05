@@ -17,7 +17,6 @@ test('Should not create campground without title', async () => {
     .post('/campgrounds')
     .set('Cookie', [`auth_token=${userOneToken}`])
     .send({
-      image: 'https://image.com',
       description: 'This is description for Campground',
       price: '5.00',
     })
@@ -33,7 +32,6 @@ test('Should not create campground with short title', async () => {
     .set('Cookie', [`auth_token=${userOneToken}`])
     .send({
       title: 'aaa',
-      image: 'https://image.com',
       description: 'This is description for Campground',
       price: '5.00',
     })
@@ -49,7 +47,6 @@ test('Should not create campground with long title', async () => {
     .set('Cookie', [`auth_token=${userOneToken}`])
     .send({
       title: 'a'.repeat(21),
-      image: 'https://image.com',
       description: 'This is description for Campground',
       price: '5.00',
     })
@@ -65,7 +62,6 @@ test('Should not create campground with non alphanumeric title', async () => {
     .set('Cookie', [`auth_token=${userOneToken}`])
     .send({
       title: 'Campground Title$',
-      image: 'https://image.com',
       description: 'This is description for Campground',
       price: '5.00',
     })
@@ -86,7 +82,6 @@ test('Should not create campground without description', async () => {
     .set('Cookie', [`auth_token=${userOneToken}`])
     .send({
       title: 'Invalid Description',
-      image: 'https://image.com',
       price: '5.00',
     })
     .expect(400);
@@ -101,7 +96,6 @@ test('Should not create campground with short description', async () => {
     .set('Cookie', [`auth_token=${userOneToken}`])
     .send({
       title: 'Invalid Description',
-      image: 'https://image.com',
       description: 't'.repeat(19),
       price: '5.00',
     })
@@ -117,7 +111,6 @@ test('Should not create campground with long description', async () => {
     .set('Cookie', [`auth_token=${userOneToken}`])
     .send({
       title: 'Invalid Description',
-      image: 'https://image.com',
       description: 't'.repeat(2501),
       price: '5.00',
     })
@@ -137,7 +130,6 @@ test('Should not create campground without price', async () => {
     .set('Cookie', [`auth_token=${userOneToken}`])
     .send({
       title: 'Invalid Price',
-      image: 'https://image.com',
       description: 'This is a campground description',
     })
     .expect(400);
@@ -152,7 +144,6 @@ test('Should not create campground with invalid type of price', async () => {
     .set('Cookie', [`auth_token=${userOneToken}`])
     .send({
       title: 'Invalid Price',
-      image: 'https://image.com',
       description: 'This is a campground description',
       price: 'abc',
     })
@@ -168,7 +159,6 @@ test('Should not create campground with high price', async () => {
     .set('Cookie', [`auth_token=${userOneToken}`])
     .send({
       title: 'Invalid Price',
-      image: 'https://image.com',
       description: 'This is a campground description',
       price: '1000.1',
     })
@@ -184,7 +174,6 @@ test('Should not create campground with low price', async () => {
     .set('Cookie', [`auth_token=${userOneToken}`])
     .send({
       title: 'Invalid Price',
-      image: 'https://image.com',
       description: 'This is a campground description',
       price: '0.5',
     })
