@@ -39,23 +39,6 @@ test('Should not update comment with invalid campground id', async () => {
   expect(comment.description).not.toBe('Updated Description');
 });
 
-test('Should not update comment with wrong campground id', async () => {
-  await request(app)
-    .patch(
-      `/campgrounds/${campgroundOneId
-        .toString()
-        .slice(0, -1)}9/comments/${commentOneId}`
-    )
-    .set('Cookie', [`auth_token="${userOneToken}"`])
-    .send({
-      description: 'Updated Description',
-    })
-    .expect(404);
-
-  const comment = await Comment.findById(commentOneId);
-  expect(comment.description).not.toBe('Updated Description');
-});
-
 test('Should not update comment with invalid comment id', async () => {
   await request(app)
     .patch(`/campgrounds/${campgroundOneId}/comments/${commentOneId}aaa`)
@@ -64,23 +47,6 @@ test('Should not update comment with invalid comment id', async () => {
       description: 'Updated Description',
     })
     .expect(400);
-
-  const comment = await Comment.findById(commentOneId);
-  expect(comment.description).not.toBe('Updated Description');
-});
-
-test('Should not update comment with wrong comment id', async () => {
-  await request(app)
-    .patch(
-      `/campgrounds/${campgroundOneId}/comments/${commentOneId
-        .toString()
-        .slice(0, -1)}3`
-    )
-    .set('Cookie', [`auth_token="${userOneToken}"`])
-    .send({
-      description: 'Updated Description',
-    })
-    .expect(404);
 
   const comment = await Comment.findById(commentOneId);
   expect(comment.description).not.toBe('Updated Description');

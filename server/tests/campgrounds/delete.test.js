@@ -49,14 +49,3 @@ test('Should not delete campground with invalid id', async () => {
   const campground = await Campground.findById(campgroundOneId);
   expect(campground).not.toBeNull();
 });
-
-test('Should not delete campground with wrong id', async () => {
-  await request(app)
-    .delete(`/campgrounds/${campgroundOneId.toString().slice(0, -1)}1`)
-    .set('Cookie', [`auth_token=${userOneToken}`])
-    .send()
-    .expect(404);
-
-  const campground = await Campground.findById(campgroundOneId);
-  expect(campground).not.toBeNull();
-});
