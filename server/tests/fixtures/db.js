@@ -74,6 +74,7 @@ const campgroundTwo = {
   price: '9.00',
   _id: campgroundTwoId,
   owner: userOneId,
+  image: crypto.randomBytes(64),
 };
 
 const campgroundThreeId = new mongoose.Types.ObjectId();
@@ -160,6 +161,7 @@ module.exports = {
   userTwo,
   campgroundOne,
   campgroundOneId,
+  campgroundTwoId,
   commentOneId,
   setupDatabase,
 };

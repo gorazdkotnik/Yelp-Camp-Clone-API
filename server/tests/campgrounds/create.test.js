@@ -182,3 +182,5 @@ test('Should not create campground with low price', async () => {
   const campground = await Campground.findOne({ title: 'Invalid Price' });
   expect(campground).toBeNull();
 });
+
+// TODO: Add tests for campground image upload
