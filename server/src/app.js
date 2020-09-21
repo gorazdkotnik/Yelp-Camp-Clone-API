@@ -2,12 +2,16 @@
 const express = require('express');
 const cookieParser = require('cookie-parser');
 const morgan = require('morgan');
+const path = require('path');
 
 // App
 const app = express();
 
 // Mongoose Connection
 require('./db/mongoose');
+
+// Static Folder
+app.use(express.static(path.join(__dirname, '../public')));
 
 // App Config
 app.use(express.json());
