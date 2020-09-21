@@ -17,7 +17,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 
-if (NODE_MODE === 'dev') {
+if (process.env.NODE_MODE === 'dev') {
   const morgan = require('morgan');
   app.use(morgan('dev'));
 }
