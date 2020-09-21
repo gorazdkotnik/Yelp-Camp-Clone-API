@@ -1,7 +1,6 @@
 // Modules
 const express = require('express');
 const cookieParser = require('cookie-parser');
-const morgan = require('morgan');
 const path = require('path');
 
 // App
@@ -17,7 +16,11 @@ app.use(express.static(path.join(__dirname, '../public')));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
-app.use(morgan('dev'));
+
+if (NODE_MODE === 'dev') {
+  const morgan = require('morgan');
+  app.use(morgan('dev'));
+}
 
 // Routers
 app.use('/campgrounds', require('./routers/campgrounds'));
