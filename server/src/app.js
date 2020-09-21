@@ -17,9 +17,7 @@ app.use(express.static(path.join(__dirname, '../public')));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
-if (process.env.NODE_MODE === 'dev') {
-  app.use(morgan('dev'));
-}
+app.use(morgan('dev'));
 
 // Routers
 app.use('/campgrounds', require('./routers/campgrounds'));
